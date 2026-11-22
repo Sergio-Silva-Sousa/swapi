@@ -13,7 +13,7 @@ abstract final class ApiCacheDatabase {
       '${directory.path}${Platform.pathSeparator}swapo.sqlite',
     );
     final cache = DriftApiCacheStore(
-      NativeDatabase.createInBackground(databaseFile),
+      NativeDatabase(databaseFile),
     );
     await cache.initialize();
     return cache;

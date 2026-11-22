@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
+import '../database/drift_executor_opener.dart';
+
 /// A cache row exposed independently from its persistence mechanism.
 class CachedJson {
   const CachedJson({
@@ -39,6 +41,7 @@ class DriftApiCacheStore implements ApiCacheStore {
 
   Future<void> initialize() async {
     if (_initialized) return;
+    await ensureDriftExecutorOpen(_executor);
     await _executor.runCustom('''
       CREATE TABLE IF NOT EXISTS api_cache (
         url TEXT PRIMARY KEY NOT NULL,

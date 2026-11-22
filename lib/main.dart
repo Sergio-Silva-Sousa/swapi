@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
 import 'core/api/api_client.dart';
 import 'core/api/databank_image_provider.dart';
 import 'core/api/databank_image_resolver.dart';
-import 'core/cache/api_cache_database.dart';
-import 'core/network/assumed_online_network_status.dart';
+import 'core/api/imdb_image_provider.dart';
+import 'core/api/imdb_image_resolver.dart';
+import 'core/cache/api_cache_store.dart';
+import 'core/database/app_database.dart';
+import 'core/network/connectivity_network_status.dart';
+import 'core/theme/app_theme.dart';
 import 'features/auth/data/auth_repository.dart';
 import 'features/auth/presentation/auth_controller.dart';
 import 'features/auth/presentation/auth_gate.dart';
@@ -24,13 +29,15 @@ import 'features/favorites/presentation/favorites_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final authRepository = await LocalAuthRepository.open();
-  final cache = await ApiCacheDatabase.open();
-  final favoritesRepository = await FavoritesRepository.open();
+  final database = await AppDatabase.open();
+  final cache = DriftApiCacheStore(database.executor);
+  await cache.initialize();
+  final authRepository = await LocalAuthRepository.open(database.executor);
+  final favoritesRepository = await FavoritesRepository.open(database.executor);
   final apiClient = ApiClient(
     dio: Dio(),
     cache: cache,
-    networkStatus: const AssumedOnlineNetworkStatus(),
+    networkStatus: ConnectivityNetworkStatus(Connectivity()),
   );
   runApp(
     ProviderScope(
@@ -41,6 +48,7 @@ Future<void> main() async {
         planetsRepositoryProvider.overrideWithValue(PlanetsRepository(apiClient)),
         favoritesRepositoryProvider.overrideWithValue(favoritesRepository),
         databankImageResolverProvider.overrideWithValue(DatabankImageResolver(apiClient)),
+        imdbImageResolverProvider.overrideWithValue(ImdbImageResolver(apiClient)),
       ],
       child: const SwapoApp(),
     ),
@@ -54,10 +62,9 @@ class SwapoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Star Wars Databank',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xfff7c948)),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.dark,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
       routerConfig: _router,
     );
   }

@@ -4,17 +4,24 @@ import 'package:drift/drift.dart';
 
 import '../database/drift_executor_opener.dart';
 
+/// The sentinel used in the JSON body to mark a known missing resource.
+const String _missSentinel = '__swapo_miss__';
+
 /// A cache row exposed independently from its persistence mechanism.
 class CachedJson {
   const CachedJson({
     required this.body,
     required this.fetchedAt,
     required this.expiresAt,
+    this.isMiss = false,
   });
 
   final Map<String, dynamic> body;
   final DateTime fetchedAt;
   final DateTime expiresAt;
+
+  /// True when the stored value is a negative lookup (404 or empty result).
+  final bool isMiss;
 
   bool get isExpired => !expiresAt.isAfter(DateTime.now().toUtc());
 }
@@ -27,6 +34,9 @@ abstract interface class ApiCacheStore {
     required Map<String, dynamic> body,
     required Duration ttl,
   });
+
+  /// Stores a short-lived negative lookup so the same miss is not repeated.
+  Future<void> writeMiss({required String url, required Duration ttl});
 }
 
 /// Drift-backed implementation of the `api_cache` table.
@@ -53,8 +63,6 @@ class DriftApiCacheStore implements ApiCacheStore {
     _initialized = true;
   }
 
-  Future<void> close() => _executor.close();
-
   @override
   Future<CachedJson?> read(String url) async {
     await initialize();
@@ -69,10 +77,14 @@ class DriftApiCacheStore implements ApiCacheStore {
     if (body is! Map) {
       throw FormatException('Cached response for $url is not a JSON object.');
     }
+    final decoded = Map<String, dynamic>.from(body);
+    final isMiss = decoded[_missSentinel] == true;
+    if (isMiss) decoded.clear();
     return CachedJson(
-      body: Map<String, dynamic>.from(body),
+      body: decoded,
       fetchedAt: _dateFromMillis(row['fetched_at']),
       expiresAt: _dateFromMillis(row['expires_at']),
+      isMiss: isMiss,
     );
   }
 
@@ -80,6 +92,27 @@ class DriftApiCacheStore implements ApiCacheStore {
   Future<void> write({
     required String url,
     required Map<String, dynamic> body,
+    required Duration ttl,
+  }) {
+    return _write(
+      url: url,
+      body: jsonEncode(body),
+      ttl: ttl,
+    );
+  }
+
+  @override
+  Future<void> writeMiss({required String url, required Duration ttl}) {
+    return _write(
+      url: url,
+      body: jsonEncode(<String, dynamic>{_missSentinel: true}),
+      ttl: ttl,
+    );
+  }
+
+  Future<void> _write({
+    required String url,
+    required String body,
     required Duration ttl,
   }) async {
     await initialize();
@@ -94,7 +127,7 @@ class DriftApiCacheStore implements ApiCacheStore {
            expires_at = excluded.expires_at''',
       <Object?>[
         url,
-        jsonEncode(body),
+        body,
         fetchedAt.millisecondsSinceEpoch,
         expiresAt.millisecondsSinceEpoch,
       ],

@@ -13,9 +13,8 @@ class PasswordHash {
 /// Password hashing based on PBKDF2-HMAC-SHA256 with a unique random salt.
 class PasswordHasher {
   PasswordHasher({Cryptography? cryptography})
-      : _cryptography = cryptography ?? Cryptography.instance,
-        _random = Random.secure(),
-        _algorithm = Pbkdf2(
+      : _random = Random.secure(),
+        _algorithm = (cryptography ?? Cryptography.instance).pbkdf2(
           macAlgorithm: Hmac.sha256(),
           iterations: _iterations,
           bits: _keyBits,
@@ -25,7 +24,6 @@ class PasswordHasher {
   static const _keyBits = 256;
   static const _saltLength = 16;
 
-  final Cryptography _cryptography;
   final Random _random;
   final Pbkdf2 _algorithm;
 

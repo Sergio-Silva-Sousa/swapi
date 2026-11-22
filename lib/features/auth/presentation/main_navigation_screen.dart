@@ -17,25 +17,93 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   var _index = 0;
 
   static const _destinations = <_Destination>[
-    _Destination('Filmes', Icons.movie_outlined),
-    _Destination('Personagens', Icons.people_outline),
-    _Destination('Planetas', Icons.public_outlined),
-    _Destination('Favoritos', Icons.favorite_outline),
+    _Destination('Filmes', Icons.movie_outlined, 'Os filmes da saga'),
+    _Destination('Personagens', Icons.people_outline, 'Quem habita a galáxia'),
+    _Destination('Planetas', Icons.public_outlined, 'Mundos para explorar'),
+    _Destination('Favoritos', Icons.favorite_outline, 'Sua coleção pessoal'),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     final destination = _destinations[_index];
     return Scaffold(
       appBar: AppBar(
-        title: Text(destination.label),
+        toolbarHeight: 84,
+        leadingWidth: 64,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16, top: 6),
+          child: Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: <Color>[colors.primary, colors.secondary],
+              ),
+            ),
+            child: Icon(Icons.auto_awesome, color: colors.onPrimary, size: 22),
+          ),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'STAR WARS',
+              style: TextStyle(
+                color: colors.primary,
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 2.4,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              destination.label,
+              style: TextStyle(
+                color: colors.onSurface,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.3,
+              ),
+            ),
+          ],
+        ),
         actions: [
-          IconButton(
-            tooltip: 'Perfil',
-            onPressed: () => context.push('/perfil'),
-            icon: const Icon(Icons.account_circle_outlined),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: IconButton(
+              tooltip: 'Perfil',
+              onPressed: () => context.push('/perfil'),
+              icon: CircleAvatar(
+                radius: 18,
+                backgroundColor: colors.primaryContainer,
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  color: colors.primary,
+                  size: 20,
+                ),
+              ),
+            ),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(22),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 0, 18, 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                destination.subtitle,
+                style: TextStyle(
+                  color: colors.onSurfaceVariant,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
       body: _index == 0
           ? const FilmsScreen()
@@ -51,6 +119,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           for (final destination in _destinations)
             NavigationDestination(
               icon: Icon(destination.icon),
+              selectedIcon: Icon(destination.icon, color: colors.primary),
               label: destination.label,
             ),
         ],
@@ -60,8 +129,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 }
 
 class _Destination {
-  const _Destination(this.label, this.icon);
+  const _Destination(this.label, this.icon, this.subtitle);
 
   final String label;
   final IconData icon;
+  final String subtitle;
 }

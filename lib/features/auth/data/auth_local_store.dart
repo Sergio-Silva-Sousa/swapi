@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../core/database/drift_executor_opener.dart';
 import 'auth_user.dart';
@@ -26,14 +22,6 @@ class AuthLocalStore {
 
   final QueryExecutor _executor;
   var _initialized = false;
-
-  static Future<AuthLocalStore> open() async {
-    final directory = await getApplicationSupportDirectory();
-    final database = File('${directory.path}${Platform.pathSeparator}swapo.sqlite');
-    final store = AuthLocalStore(NativeDatabase(database));
-    await store.initialize();
-    return store;
-  }
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -89,8 +77,6 @@ class AuthLocalStore {
     );
     return AuthUser(id: id, name: name, email: email);
   }
-
-  Future<void> close() => _executor.close();
 
   StoredUser _storedUserFromRow(Map<String, Object?> row) {
     return StoredUser(

@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'auth_local_store.dart';
@@ -34,9 +35,11 @@ class LocalAuthRepository implements AuthRepository {
         _sessionStore = sessionStore,
         _passwordHasher = passwordHasher;
 
-  static Future<LocalAuthRepository> open() async {
+  static Future<LocalAuthRepository> open(QueryExecutor executor) async {
+    final store = AuthLocalStore(executor);
+    await store.initialize();
     return LocalAuthRepository(
-      store: await AuthLocalStore.open(),
+      store: store,
       sessionStore: SessionStore(const FlutterSecureStorage()),
       passwordHasher: PasswordHasher(),
     );

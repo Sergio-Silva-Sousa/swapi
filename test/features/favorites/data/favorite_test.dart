@@ -1,0 +1,1 @@
+import 'package:flutter_test/flutter_test.dart';import 'package:swapo/features/favorites/data/favorite.dart';void main()=>test('favorite preserves its user-scoped item identity',(){const f=Favorite(type:'film',itemId:1,title:'A New Hope');expect(f.type,'film');expect(f.itemId,1);});

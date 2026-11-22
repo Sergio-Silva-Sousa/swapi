@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/film.dart';
 import 'films_provider.dart';
+import '../../auth/presentation/auth_controller.dart';
+import '../../favorites/data/favorite.dart';
+import '../../favorites/presentation/favorites_screen.dart';
 
 class FilmsScreen extends ConsumerStatefulWidget {
   const FilmsScreen({super.key});
@@ -58,6 +61,7 @@ class _FilmsScreenState extends ConsumerState<FilmsScreen> {
             return ListTile(
               leading: CircleAvatar(child: Text('${film.episodeId}')),
               title: Text(film.title), subtitle: Text('${film.releaseDate.year} · ${film.director}'),
+              trailing: IconButton(icon: const Icon(Icons.favorite_border), tooltip: 'Favoritar', onPressed: () { final user = ref.read(authControllerProvider).valueOrNull; if (user != null) { ref.read(favoritesRepositoryProvider).toggle(user.id, Favorite(type: 'film', itemId: film.id, title: film.title)).then((_) => ref.invalidate(favoritesProvider)); } }),
               onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => FilmDetailScreen(film: film))),
             );
           })),

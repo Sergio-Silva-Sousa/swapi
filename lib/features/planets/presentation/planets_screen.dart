@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../auth/presentation/auth_controller.dart';
+import '../../favorites/data/favorite.dart';
+import '../../favorites/presentation/favorites_screen.dart';
 import '../data/planets_repository.dart';
 
 final planetsRepositoryProvider = Provider<PlanetsRepository>(
@@ -84,6 +87,18 @@ class _PlanetsScreenState extends ConsumerState<PlanetsScreen> {
                       leading: const Icon(Icons.public),
                       title: Text(p.name),
                       subtitle: Text('${p.climate} · ${p.terrain}'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.favorite_border),
+                        onPressed: () {
+                          final user = ref.read(authControllerProvider).valueOrNull;
+                          if (user != null) {
+                            ref.read(favoritesRepositoryProvider).toggle(
+                              user.id,
+                              Favorite(type: 'planet', itemId: p.id, title: p.name),
+                            ).then((_) => ref.invalidate(favoritesProvider));
+                          }
+                        },
+                      ),
                       onTap: () {
                         Navigator.push(
                           context,

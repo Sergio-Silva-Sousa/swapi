@@ -17,11 +17,14 @@ import 'features/people/data/people_repository.dart';
 import 'features/people/presentation/people_screen.dart';
 import 'features/planets/data/planets_repository.dart';
 import 'features/planets/presentation/planets_screen.dart';
+import 'features/favorites/data/favorites_repository.dart';
+import 'features/favorites/presentation/favorites_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final authRepository = await LocalAuthRepository.open();
   final cache = await ApiCacheDatabase.open();
+  final favoritesRepository = await FavoritesRepository.open();
   final apiClient = ApiClient(
     dio: Dio(),
     cache: cache,
@@ -34,6 +37,7 @@ Future<void> main() async {
         filmsRepositoryProvider.overrideWithValue(FilmsRepository(apiClient)),
         peopleRepositoryProvider.overrideWithValue(PeopleRepository(apiClient)),
         planetsRepositoryProvider.overrideWithValue(PlanetsRepository(apiClient)),
+        favoritesRepositoryProvider.overrideWithValue(favoritesRepository),
       ],
       child: const SwapoApp(),
     ),

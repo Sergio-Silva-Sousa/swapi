@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swapo/features/films/presentation/films_screen.dart';
 import 'package:swapo/features/people/presentation/people_screen.dart';
 import 'package:swapo/features/planets/presentation/planets_screen.dart';
+import 'package:swapo/features/favorites/presentation/favorites_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -36,27 +37,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
         ],
       ),
-      body: _index == 0 ? const FilmsScreen() : _index == 1 ? const PeopleScreen() : _index == 2 ? const PlanetsScreen() : Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(destination.icon, size: 64),
-              const SizedBox(height: 16),
-              Text(
-                destination.label,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'O catálogo será conectado à fonte de dados na próxima fatia.',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
+      body: _index == 0
+          ? const FilmsScreen()
+          : _index == 1
+              ? const PeopleScreen()
+              : _index == 2
+                  ? const PlanetsScreen()
+                  : const FavoritesScreen(),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (index) => setState(() => _index = index),

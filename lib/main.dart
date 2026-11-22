@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
 
 import 'core/api/api_client.dart';
+import 'core/api/databank_image_provider.dart';
+import 'core/api/databank_image_resolver.dart';
 import 'core/cache/api_cache_database.dart';
 import 'core/network/assumed_online_network_status.dart';
 import 'features/auth/data/auth_repository.dart';
@@ -38,6 +40,7 @@ Future<void> main() async {
         peopleRepositoryProvider.overrideWithValue(PeopleRepository(apiClient)),
         planetsRepositoryProvider.overrideWithValue(PlanetsRepository(apiClient)),
         favoritesRepositoryProvider.overrideWithValue(favoritesRepository),
+        databankImageResolverProvider.overrideWithValue(DatabankImageResolver(apiClient)),
       ],
       child: const SwapoApp(),
     ),

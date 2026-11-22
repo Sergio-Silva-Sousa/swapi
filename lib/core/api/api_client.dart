@@ -102,6 +102,7 @@ class ApiClient {
   Map<String, dynamic> _asJsonObject(Object? data, Uri url) {
     if (data is Map<String, dynamic>) return data;
     if (data is Map) return Map<String, dynamic>.from(data);
+    if (data is List) return <String, dynamic>{'_items': data};
     throw FormatException('Expected a JSON object from $url.');
   }
 }

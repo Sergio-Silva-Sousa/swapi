@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:swapo/core/widgets/databank_image.dart';
 
 import '../../auth/presentation/auth_controller.dart';
 import '../../favorites/data/favorite.dart';
@@ -84,7 +85,7 @@ class _PlanetsScreenState extends ConsumerState<PlanetsScreen> {
 
                   ...x.map((p) {
                     return ListTile(
-                      leading: const Icon(Icons.public),
+                      leading: DatabankImage.planet(name: p.name),
                       title: Text(p.name),
                       subtitle: Text('${p.climate} · ${p.terrain}'),
                       trailing: IconButton(

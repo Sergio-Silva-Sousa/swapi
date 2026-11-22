@@ -88,7 +88,8 @@ Regras:
 - **Personagens têm três endpoints possíveis.** Tente nesta ordem e pare no primeiro sucesso: `characters` → `creatures` → `droids`. Memorize qual funcionou para aquele nome.
 - **Nome deve ser URL-encoded** e precisa bater com o nome da SWAPI (ex.: `Luke Skywalker`). Diferenças de grafia, acento ou sufixo podem fazer a busca falhar. Trate 404 como "não encontrado", sem erro na tela.
 - **Cold start.** O serviço está no Render, e o plano gratuito pode dormir. A primeira requisição pode demorar bastante. Use timeout maior nessa API (`[definir]`) e mostre loading próprio, sem bloquear a lista de texto.
-- **Schema da imagem** `[confirmar]`: campo exato da URL da imagem na resposta. Documente aqui depois de inspecionar uma resposta real.
+- **Schema da imagem**: o endpoint devolve uma lista e o primeiro item contém
+  `image` com a URL absoluta. Confirmado para Luke Skywalker.
 
 ---
 

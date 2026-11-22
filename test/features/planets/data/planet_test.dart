@@ -1,0 +1,1 @@
+import 'package:flutter_test/flutter_test.dart';import 'package:swapo/features/planets/data/planet.dart';void main()=>test('parses unknown and empty URLs',(){final p=Planet.fromJson({'url':'https://swapi.dev/api/planets/1/','name':'Tatooine','climate':'unknown','terrain':'unknown','residents':[],'films':[]});expect(p.id,1);expect(p.residentUrls,isEmpty);});

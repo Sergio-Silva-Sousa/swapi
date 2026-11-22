@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:swapo/features/films/presentation/films_screen.dart';
+import 'package:swapo/features/people/presentation/people_screen.dart';
+import 'package:swapo/features/planets/presentation/planets_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -34,7 +36,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
         ],
       ),
-      body: _index == 0 ? const FilmsScreen() : Center(
+      body: _index == 0 ? const FilmsScreen() : _index == 1 ? const PeopleScreen() : _index == 2 ? const PlanetsScreen() : Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(

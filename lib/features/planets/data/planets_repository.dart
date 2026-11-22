@@ -1,0 +1,2 @@
+import '../../../core/api/api_client.dart'; import '../../../core/cache/ttl.dart'; import 'planet.dart';
+class PlanetsRepository { PlanetsRepository(this.client); final ApiClient client; Future<List<Planet>> list({String search=''}) async {final r=await client.getJson(Uri.https('swapi.dev','/api/planets/',search.isEmpty?null:{'search':search}),ttl:CacheTtl.lists);return (r.body['results'] as List).map((x)=>Planet.fromJson(Map<String,dynamic>.from(x as Map))).toList();}}

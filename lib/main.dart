@@ -13,6 +13,10 @@ import 'features/auth/presentation/profile_screen.dart';
 import 'features/auth/presentation/register_screen.dart';
 import 'features/films/data/films_repository.dart';
 import 'features/films/presentation/films_provider.dart';
+import 'features/people/data/people_repository.dart';
+import 'features/people/presentation/people_screen.dart';
+import 'features/planets/data/planets_repository.dart';
+import 'features/planets/presentation/planets_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +32,8 @@ Future<void> main() async {
       overrides: [
         authRepositoryProvider.overrideWithValue(authRepository),
         filmsRepositoryProvider.overrideWithValue(FilmsRepository(apiClient)),
+        peopleRepositoryProvider.overrideWithValue(PeopleRepository(apiClient)),
+        planetsRepositoryProvider.overrideWithValue(PlanetsRepository(apiClient)),
       ],
       child: const SwapoApp(),
     ),

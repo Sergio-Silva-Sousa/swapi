@@ -1,0 +1,2 @@
+import 'package:flutter_test/flutter_test.dart'; import 'package:swapo/features/people/data/person.dart';
+void main()=>test('parses unknown and empty relationship lists',(){final person=Person.fromJson({'url':'https://swapi.dev/api/people/1/','name':'Luke','gender':'unknown','birth_year':'unknown','films':[],'species':[]});expect(person.id,1);expect(person.filmUrls,isEmpty);expect(person.birthYear,'unknown');});

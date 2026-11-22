@@ -1,0 +1,3 @@
+import '../../../core/api/swapi_url_parser.dart';
+class Planet { const Planet({required this.id,required this.name,required this.climate,required this.terrain,required this.residentUrls,required this.filmUrls}); final int id;final String name,climate,terrain;final List<String> residentUrls,filmUrls;
+factory Planet.fromJson(Map<String,dynamic> j)=>Planet(id:SwapiUrlParser.extractId(j['url'] as String),name:j['name'] as String,climate:j['climate'] as String? ?? 'unknown',terrain:j['terrain'] as String? ?? 'unknown',residentUrls:List<String>.from(j['residents'] as List? ?? const []),filmUrls:List<String>.from(j['films'] as List? ?? const [])); }

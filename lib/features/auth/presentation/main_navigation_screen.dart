@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:swapo/features/films/presentation/films_screen.dart';
+
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
@@ -32,7 +34,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
         ],
       ),
-      body: Center(
+      body: _index == 0 ? const FilmsScreen() : Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
